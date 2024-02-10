@@ -1,30 +1,29 @@
-const express = require("express")
-const { register,
-    login,
-    logout, 
-    getSingleUser,
-    loginStatus,
-    updateUser,
-    changePassword,
-    forgotPassword,
-    resetPassword
-} = require("../controllers/userCtrl")
-const { protect } = require("../middlewares/authMiddleware")
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
+const userController = require("../controllers/userCtrl");
 
-router.post("/register" , register)
-router.post("/login" , login)
-router.post("/logout" , logout)
-router.get("/getUser",protect , getSingleUser)
-router.get("/loginStatus" , loginStatus)
-router.patch("/updateUser",protect , updateUser)
-router.patch("/changePassword", protect , changePassword)
-router.post("/forgotPassword", forgotPassword)
-router.put("/resetPassword/:resetToken", resetPassword)
+// const {
+//   register,
+//   login,
+//   logout,
+//   getSingleUser,
+//   updateUser,
+//   changePassword,
+//   forgotPassword,
+//   resetPassword,
+//   saveSentence,
+// } = require("../controllers/userCtrl");
+const { protect } = require("../middlewares/authMiddleware");
 
+router.post("/register", userController.register);
+router.post("/login", userController.login);
+router.post("/logout", userController.logout);
+router.post("/saveSentence", protect, userController.saveSentence);
+router.post("/forgotPassword", userController.forgotPassword);
 
+router.get("/getUser", protect, userController.forgotPassword);
 
+router.patch("/changePassword", protect, userController.changePassword);
+router.patch("/resetPassword/:resetToken", userController.resetPassword);
 
-
-
-module.exports = router
+module.exports = router;

@@ -33,7 +33,9 @@ var userSchema = new mongoose.Schema({
         type:String,
         maxLength:[250,"bio must be less than 250 character"],
         default : ""
-    }
+    },
+    sentences:[String]
+    
 },{
     timestamp:true
 });
