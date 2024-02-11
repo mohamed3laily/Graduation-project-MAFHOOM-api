@@ -1,65 +1,35 @@
-// const asyncHandler = require("express-async-handler")
-// const User = require("../models/userModel")
-// const jwt = require("jsonwebtoken")
-
-// const protect =asyncHandler(async (req,res ,next)=>{
-//     try {
-//         const token = req.cookies.token
-//         if (!token) {
-//             res.status(400).json("your are not Authorized, login again")
-//         }
-//         //verify the token
-//         const verifyToken = jwt.verify(token, process.env.JWT_SECRET)
-
-//         // get the user
-//         const user = await User.findById(verifyToken.id)
-//         if (!user) {
-//             res.status(400).json("user not found")
-//         }
-//         req.user = user
-//         next()
-//     }
-//     catch (error) {
-//         res.status(400).json("your are not Authorized")
-//     }
-
-// } )
-
-// module.exports = {
-//     protect
-// }
-
 const jwt = require("jsonwebtoken");
-const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const { promisify } = require("util");
 
 exports.protect = async (req, res, next) => {
-  try {
-    // Extract token from cookies
-    const token = req.cookies.token;
-
-    if (!token) {
-      return res
-        .status(401)
-        .json({ error: "No token found. User not authenticated." });
-    }
-
-    // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Fetch user based on decoded token
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found." });
-    }
-
-    // Attach user to request object
-    req.user = user;
-    next();
-  } catch (error) {
-    return res
-      .status(401)
-      .json({ error: "Invalid token. User not authenticated." });
+  // get the token from the header if it exists
+  let token = "";
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
   }
+
+  if (!token) {
+    return next(
+      new Error("You are not logged in! Please log in to get access.")
+    );
+  }
+
+  // Verify token
+  let decoded;
+  try {
+    decoded = await promisify(jwt.verify)(token, process.env.TOKEN_SECRET);
+  } catch (error) {
+    return next(res.status(401).json({ message: error.message }));
+  }
+  //check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(res.status(401).json({ message: "User no longer exists" }));
+  }
+  req.user = currentUser;
+  next();
 };

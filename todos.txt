@@ -1,0 +1,5 @@
+facebook auth
+google auth
+phone login
+swagger docs
+delete and edit sentence

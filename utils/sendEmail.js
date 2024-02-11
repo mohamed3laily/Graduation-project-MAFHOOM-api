@@ -1,37 +1,26 @@
-const nodemailer = require("nodemailer");
-const asyncHandler = require("express-async-handler");
+const nodeMailer = require("nodemailer");
 
-const sendEmail = asyncHandler(async (option) => {
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        auth: {
-            user: process.env.Email_USER,
-            pass: process.env.Email_PASSWORD,
-        },
-    });
+const sendEmail = async (options) => {
+  // 1) Create a transporter
+  var transport = nodeMailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
 
-    // define email options
-    const emailOption ={
-        from: '"SignLanguage_Project " <abc@gmail.com>', // sender address
-        to: option.email, // list of receivers
-        subject: option.subject, // Subject line
-        message: option.message, // plain text body
-    };
+  // 2) Define the email options
+  const mailOptions = {
+    from: "Travel Agency <mohamed@gmail.com>",
+    to: options.email,
+    subject: options.subject,
+    text: options.message,
+  };
 
-    await transporter.sendMail(emailOption);
-
-//   // send mail with defined transport object
-//   let info = await transporter.sendMail({
-//     from: '"inventory_Api " <abc@gmail.com>', // sender address
-//     to: data.to, // list of receivers
-//     subject: data.subject, // Subject line
-//     text: data.text, // plain text body
-//     html: data.htm, // html body
-//   });
-
-//   console.log("Message sent: %s", info.messageId);
-//   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-});
+  // 3) Actually send the email
+  await transport.sendMail(mailOptions);
+};
 
 module.exports = sendEmail;

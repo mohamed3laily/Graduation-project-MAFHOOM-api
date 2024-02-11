@@ -1,5 +1,5 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -15,20 +15,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // routes
-//app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);
 
-// connect to DB
-const connectToDB = () => {
-  try {
-    mongoose.connect(process.env.MONGO_URL);
-    console.log("mongoDb connected successfully ^_^");
-  } catch (error) {
-    console.log("mongoDb connected failed");
-  }
-};
+// Connect to MongoDB
+const dbName = "GraduationProject";
+mongoose
+  .connect(process.env.DATABASE_URL, {
+    dbName,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected!"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
-  connectToDB();
 });

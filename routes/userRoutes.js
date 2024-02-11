@@ -1,29 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/userCtrl");
+const userController = require("../controllers/userController");
+const authController = require("../controllers/authController");
+const savedSentencesController = require("../controllers/savedSentencesController");
 
-// const {
-//   register,
-//   login,
-//   logout,
-//   getSingleUser,
-//   updateUser,
-//   changePassword,
-//   forgotPassword,
-//   resetPassword,
-//   saveSentence,
-// } = require("../controllers/userCtrl");
 const { protect } = require("../middlewares/authMiddleware");
 
-router.post("/register", userController.register);
-router.post("/login", userController.login);
-router.post("/logout", userController.logout);
-router.post("/saveSentence", protect, userController.saveSentence);
+router.post("/register", authController.signUp);
+router.post("/login", authController.login);
+router.post("/logout", authController.logout);
+router.post(
+  "/saveSentence",
+  protect,
+  savedSentencesController.createSavedSentence
+);
+router.get("/getUser", protect, userController.getUser);
+
+router.patch("/changeMyPassword", protect, userController.changePassword);
 router.post("/forgotPassword", userController.forgotPassword);
-
-router.get("/getUser", protect, userController.forgotPassword);
-
-router.patch("/changePassword", protect, userController.changePassword);
-router.patch("/resetPassword/:resetToken", userController.resetPassword);
-
+router.patch("/resetPassword/:token", userController.resetPassword);
 module.exports = router;
