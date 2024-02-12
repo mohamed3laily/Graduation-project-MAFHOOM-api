@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/api/login/facebook/callback",
+      callbackURL: "http://localhost:3000/login/facebook/callback",
       profileFields: ["emails", "displayName", "photos"],
     },
     async function (accessToken, refreshToken, profile, cb) {
@@ -78,7 +78,7 @@ router.get(
   }),
   function (req, res) {
     // Successful authentication, redirect to success screen.
-    res.redirect("/api/login/facebook/success");
+    res.redirect("/login/facebook/success");
   }
 );
 
