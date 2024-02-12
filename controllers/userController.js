@@ -3,11 +3,15 @@ var jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
+const {
+  uploadPhotoCloud,
+  uploadUserPhoto,
+} = require("../middlewares/uploadPhoto");
 
-exports.getUser = async (req, res) => {
+exports.userProfile = async (req, res) => {
   try {
     const id = req.user._id;
-    const user = await USER.findById(_id).select("-password");
+    const user = await USER.findById(id).select("-password");
     res.status(200).json(user);
   } catch (error) {
     console.log(error.message);
@@ -15,32 +19,38 @@ exports.getUser = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUserProfile = async (req, res) => {
   try {
-    const id = req.user._id;
-    const { name, bio, phone, photo } = req.body;
+    const userId = req.user._id;
+    const { fullName, bio, phone } = req.body;
 
-    const updatedUser = await USER.findByIdAndUpdate(
-      _id,
-      {
-        name: name || updatedUser.name,
-        bio: bio || updatedUser.bio,
-        phone: phone || updatedUser.phone,
-        photo: photo || updatedUser.photo,
-      },
-      { new: true }
-    ).select("-password");
-    await updatedUser.save();
+    const updatedFields = {};
+    if (fullName) updatedFields.fullName = fullName;
+    if (bio) updatedFields.bio = bio;
+    if (phone) updatedFields.phone = phone;
+    if (req.file) {
+      // If a file is uploaded, use Cloudinary to store the photo
+      await uploadPhotoCloud(req, res, async () => {
+        if (req.file && req.file.cloudinaryUrl) {
+          updatedFields.photo = req.file.cloudinaryUrl;
+        }
+      });
+    }
+
+    const updatedUser = await USER.findByIdAndUpdate(userId, updatedFields, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
     res.status(200).json({
-      message: "user updated successfully",
-      updateUser: updatedUser,
+      message: "User updated successfully",
+      updatedUser: updatedUser,
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(400).json("error in get login status");
+    console.error(error.message);
+    res.status(400).json({ error: er });
   }
 };
-
 //change user password
 exports.changePassword = async (req, res) => {
   try {

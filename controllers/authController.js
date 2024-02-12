@@ -44,13 +44,9 @@ exports.login = async (req, res, next) => {
   try {
     const { email, userName, password } = req.body;
 
-    if (!password) {
-      return next(new Error("Please provide a password"));
-    }
-
     // Check if either email or userName is provided
     if (!email && !userName) {
-      return next(new Error("Please provide email or username"));
+      throw new Error("Please provide email or username");
     }
 
     let user;
@@ -62,12 +58,12 @@ exports.login = async (req, res, next) => {
     }
 
     if (!user || !(await user.comparePassword(password, user.password))) {
-      return next(new Error("Incorrect email/username or password"));
+      throw new Error("Incorrect email/username or password");
     }
 
     sendToken(user, 200, res);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 

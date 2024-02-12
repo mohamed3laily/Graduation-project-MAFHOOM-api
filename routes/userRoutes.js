@@ -3,6 +3,10 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
 const savedSentencesController = require("../controllers/savedSentencesController");
+const {
+  uploadUserPhoto,
+  uploadPhotoCloud,
+} = require("../middlewares/uploadPhoto");
 
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -26,7 +30,13 @@ router.delete(
   savedSentencesController.deleteSavedSentence
 );
 
-router.get("/getUser", protect, userController.getUser);
+router.get("/myProfile", protect, userController.userProfile);
+router.patch(
+  "/updateUser",
+  protect,
+  uploadUserPhoto,
+  userController.updateUserProfile
+);
 
 router.patch("/changeMyPassword", protect, userController.changePassword);
 router.post("/forgotPassword", userController.forgotPassword);
