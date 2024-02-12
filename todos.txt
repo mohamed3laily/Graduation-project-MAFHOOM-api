@@ -1,5 +1,6 @@
 facebook auth  --done
 google auth
 phone login
-swagger docs
+postman docs
 delete and edit sentence --done
+upload users avatar

@@ -2,7 +2,7 @@ const USER = require("../models/userModel");
 var jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
-const { compare } = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 
 exports.getUser = async (req, res) => {
   try {
@@ -60,6 +60,12 @@ exports.changePassword = async (req, res) => {
     if (!newPassword) {
       return res.status(400).json({ error: "New password is required" });
     }
+    if (newPassword == oldPassword) {
+      return res.status(400).json({
+        error:
+          "New password is the same as the old password, make a new password",
+      });
+    }
     // Check old password
     const verify = await bcrypt.compare(oldPassword, user.password);
     if (!verify) {
@@ -71,7 +77,7 @@ exports.changePassword = async (req, res) => {
     res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Error in changing password" });
+    res.status(400).json({ error: "Error in changing password" });
   }
 };
 
