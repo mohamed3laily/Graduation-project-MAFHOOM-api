@@ -4,12 +4,6 @@ const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const { compare } = require("bcryptjs");
 
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.TOKEN_SECRET, {
-    expiresIn: process.env.Token_EXPIRES_IN,
-  });
-};
-
 exports.getUser = async (req, res) => {
   try {
     const id = req.user._id;
@@ -141,6 +135,5 @@ exports.resetPassword = async (req, res, next) => {
   user.passwordResetExpires = undefined;
   await user.save();
   //log the user in, send JWT
-  const token = signToken(user._id);
-  res.status(200).json({ message: "User logged in", token });
+  sendToken(user, 201, res);
 };

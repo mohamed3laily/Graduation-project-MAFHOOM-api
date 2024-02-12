@@ -1,5 +1,5 @@
-facebook auth
+facebook auth  --done
 google auth
 phone login
 swagger docs
-delete and edit sentence
+delete and edit sentence --done

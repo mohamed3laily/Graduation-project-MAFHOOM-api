@@ -10,10 +10,22 @@ router.post("/register", authController.signUp);
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 router.post(
-  "/saveSentence",
+  "/createSavedSentence",
   protect,
   savedSentencesController.createSavedSentence
 );
+router.patch(
+  "/editSavedSentence",
+  protect,
+  savedSentencesController.editSavedSentence
+);
+
+router.delete(
+  "/deleteSavedSentence",
+  protect,
+  savedSentencesController.deleteSavedSentence
+);
+
 router.get("/getUser", protect, userController.getUser);
 
 router.patch("/changeMyPassword", protect, userController.changePassword);

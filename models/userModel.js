@@ -12,6 +12,10 @@ var userSchema = new mongoose.Schema(
       type: String,
       required: [true, "please add a username"],
     },
+    accountId: {
+      type: String,
+      default: "",
+    },
     fullName: {
       type: String,
       required: [true, "please add a name"],
@@ -21,6 +25,7 @@ var userSchema = new mongoose.Schema(
       required: [true, "please add an email"],
       unique: true,
       trim: true,
+      default: "",
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         " add a valid email",
@@ -68,6 +73,10 @@ var userSchema = new mongoose.Schema(
         validateSentencesLength,
         "sentences must be less than or equal to 20",
       ],
+    },
+    provider: {
+      type: String,
+      default: "local",
     },
   },
   {

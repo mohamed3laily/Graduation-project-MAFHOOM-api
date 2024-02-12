@@ -4,23 +4,8 @@ const { promisify } = require("util");
 //const sendEmail = require("../utils/emailSender");
 const crypto = require("crypto");
 const { compare } = require("bcryptjs");
+const { sendToken } = require("./JWTHandler");
 ///////////////////////////////////////////////
-
-const sendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
-
-  const cookiesOptions = {
-    expires: new Date(
-      Date.now() + process.env.Token_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-    httpOnly: true,
-  };
-  if (process.env.NODE_ENV === "production") cookiesOptions.secure = true;
-
-  user.password = undefined;
-  res.cookie("jwt", token, cookiesOptions);
-  res.status(statusCode).json({ message: "success", token, data: user });
-};
 
 exports.signUp = async (req, res) => {
   const { userName, email, password, passwordConfirm, phone, fullName } =
@@ -95,9 +80,9 @@ exports.logout = async (req, res) => {
       sameSite: "none",
       expires: new Date(0),
     });
-    res.status(200).json("you are logged out");
+    res.status(200).json({ message: "You are logged out" });
   } catch (error) {
-    console.log(error.message);
-    res.status(400).json("error in logout");
+    console.error(error.message);
+    res.status(400).json({ error: "Error in logout" });
   }
 };
