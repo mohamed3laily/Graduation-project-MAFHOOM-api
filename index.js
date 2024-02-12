@@ -28,8 +28,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // routes
-app.use("/api/users", userRoutes);
-app.use("/api/login/facebook", facebookLogin);
+app.use("/users", userRoutes);
+app.use("/login/facebook", facebookLogin);
 
 // Connect to MongoDB
 const dbName = "GraduationProject";
