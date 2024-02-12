@@ -43,7 +43,7 @@ mongoose
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World! eshta ya na2asheen");
 });
 
 const port = process.env.PORT || 3000;
