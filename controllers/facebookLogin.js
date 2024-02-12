@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/login/facebook/callback",
+      callbackURL: "https://mafhoom-api.onrender.com/login/facebook/callback",
       profileFields: ["emails", "displayName", "photos"],
     },
     async function (accessToken, refreshToken, profile, cb) {
