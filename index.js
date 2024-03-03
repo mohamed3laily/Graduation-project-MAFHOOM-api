@@ -19,6 +19,7 @@ app.use(
 );
 
 // middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(passport.initialize()); // Initialize Passport
 app.use(passport.session()); // Use Passport's session authentication

@@ -1,6 +1,7 @@
 const USER = require("../models/userModel");
 var jwt = require("jsonwebtoken");
-const sendEmail = require("../utils/sendEmail");
+const { sendEmails } = require("../utils/sendEmail2");
+
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const {
@@ -112,11 +113,7 @@ exports.forgotPassword = async (req, res, next) => {
 
   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
   try {
-    sendEmail({
-      email: user.email,
-      subject: "Your password reset token (valid for 10 min)",
-      message,
-    });
+    sendEmails(user.email, message);
 
     res.status(200).json({
       message: "Token sent to email",
