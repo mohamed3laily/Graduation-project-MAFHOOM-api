@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const crypto = require("crypto");
 const { compare } = require("bcryptjs");
 const { sendToken } = require("./JWTHandler");
+
 ///////////////////////////////////////////////
 
 exports.signUp = async (req, res) => {
@@ -15,7 +16,8 @@ exports.signUp = async (req, res) => {
     // Check if the email already exists in the database
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({
+      return res.status(200).json({
+        status: "fail",
         message: "Email already in use. Please use a different email.",
       });
     }
@@ -29,6 +31,12 @@ exports.signUp = async (req, res) => {
       phone,
       fullName,
     });
+    if (password !== passwordConfirm) {
+      return res.status(200).json({
+        status: "fail",
+        message: "Passwords do not match",
+      });
+    }
 
     // Save the new user to the database
     const newUser = await user.save();
@@ -46,8 +54,11 @@ exports.login = async (req, res, next) => {
 
     // Check if either email or userName is provided
     if (!email && !userName) {
+      res.status(200).json({
+        status: "fail",
+        message: "Invalid email/username or password",
+      });
       throw new Error("Please provide email or username");
-      res.status(401).json({ message: "Invalid email/username or password" });
     }
 
     let user;
@@ -59,7 +70,10 @@ exports.login = async (req, res, next) => {
     }
 
     if (!user || !(await user.comparePassword(password, user.password))) {
-      res.status(401).json({ message: "Invalid email/username or password" });
+      res.status(200).json({
+        status: "fail",
+        message: "Invalid email/username or password",
+      });
     }
 
     sendToken(user, 200, res);
