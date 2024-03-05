@@ -14,9 +14,12 @@ exports.userProfile = async (req, res) => {
     const id = req.user._id;
     const user = await USER.findById(id).select("-password");
     res.status(200).json(user);
+    if (!user) {
+      return res.status(200).json({ message: "User not found" });
+    }
   } catch (error) {
     console.log(error.message);
-    res.status(400).json("error in git a user");
+    res.status(400).json("error in get a user");
   }
 };
 
@@ -59,20 +62,25 @@ exports.changePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
     const user = await USER.findById(userId); // Corrected variable name from '_id' to 'userId'
     if (!user) {
-      return res
-        .status(404)
-        .json({ error: "User not found. Please sign up again." });
+      return res.status(200).json({
+        status: "fail",
+        error: "User not found. Please sign up again.",
+      });
     }
     // Check if the user has a password set
     if (!user.password) {
-      return res.status(400).json({ error: "User password not found" });
+      return res
+        .status(200)
+        .json({ status: "fail", error: "User password not found" });
     }
     // Check if the new password is provided
     if (!newPassword) {
-      return res.status(400).json({ error: "New password is required" });
+      return res
+        .status(200)
+        .json({ status: "fail", error: "New password is required" });
     }
     if (newPassword == oldPassword) {
-      return res.status(400).json({
+      return res.status(200).json({
         error:
           "New password is the same as the old password, make a new password",
       });
@@ -80,7 +88,9 @@ exports.changePassword = async (req, res) => {
     // Check old password
     const verify = await bcrypt.compare(oldPassword, user.password);
     if (!verify) {
-      return res.status(400).json({ error: "Incorrect old password" });
+      return res
+        .status(200)
+        .json({ status: "fail", error: "Incorrect old password" });
     }
     // Update password
     user.password = newPassword;
@@ -100,7 +110,9 @@ exports.forgotPassword = async (req, res, next) => {
   }
   const user = await USER.findOne({ email: req.body.email });
   if (!user) {
-    return next(res.status(404).json({ message: "User not found" }));
+    return next(
+      res.status(200).json({ status: "fail", message: "User not found" })
+    );
   }
   //generate random token
   const resetToken = user.createPasswordResetToken();
@@ -138,7 +150,9 @@ exports.resetPassword = async (req, res, next) => {
   });
   if (!user) {
     return next(
-      res.status(400).json({ message: "Token is invalid or has expired" })
+      res
+        .status(200)
+        .json({ status: "fail", message: "Token is invalid or has expired" })
     );
   }
   //set new password

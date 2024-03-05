@@ -22,13 +22,19 @@ exports.protect = async (req, res, next) => {
   let decoded;
   try {
     decoded = await promisify(jwt.verify)(token, process.env.TOKEN_SECRET);
+    if (!decoded) {
+    }
   } catch (error) {
-    return next(res.status(401).json({ message: error.message }));
+    return next(
+      res.status(200).json({ status: "fail", message: error.message })
+    );
   }
   //check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
-    return next(res.status(401).json({ message: "User no longer exists" }));
+    return next(
+      res.status(200).json({ status: "fail", message: "User no longer exists" })
+    );
   }
   req.user = currentUser;
   next();
