@@ -19,11 +19,8 @@ exports.sendToken = (user, statusCode, res) => {
 
   user.password = undefined;
   res.cookie("jwt", token, cookiesOptions);
-<<<<<<< HEAD
   res
     .status(statusCode)
     .json({ message: "Successful Login", token, data: user });
-=======
-  res.status(statusCode).json({ message: "Successful Login", token, data: user });
->>>>>>> 4c37835ae0a63f4d288e48a088579945c917b13f
+
 };
