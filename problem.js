@@ -22,7 +22,7 @@ const findCombinationsFromText = (text) => {
     Models: null,
     Diagrams: null,
   };
-
+//
   let isValidPrefix = true; // Flag to track if all prefixes are valid
 
   for (let i = 0; i < words.length; i++) {
