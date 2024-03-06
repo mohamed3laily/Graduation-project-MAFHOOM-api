@@ -46,13 +46,11 @@ exports.updateUserProfile = async (req, res) => {
       runValidators: true,
     }).select("-password");
 
-    res
-      .status(200)
-      .json({
-        status: "succes",
-        message: "User updated successfully",
-        updatedUser: updatedUser,
-      });
+    res.status(200).json({
+      status: "success",
+      message: "User updated successfully",
+      updatedUser: updatedUser,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(400).json({ error: er });
@@ -100,7 +98,7 @@ exports.changePassword = async (req, res) => {
     await user.save();
     res
       .status(200)
-      .json({ status: "succes", message: "Password changed successfully" });
+      .json({ status: "success", message: "Password changed successfully" });
   } catch (error) {
     console.log(error);
     res.status(400).json({ error: "Error in changing password" });
@@ -133,7 +131,7 @@ exports.forgotPassword = async (req, res, next) => {
     sendEmails(user.email, message);
 
     res.status(200).json({
-      status: "succes",
+      status: "success",
       message: "Token sent to email",
     });
   } catch (error) {

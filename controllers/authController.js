@@ -103,7 +103,7 @@ exports.logout = async (req, res) => {
       sameSite: "none",
       expires: new Date(0),
     });
-    res.status(200).json({ message: "You are logged out" });
+    res.status(200).json({ status: "success", message: "You are logged out" });
   } catch (error) {
     console.error(error.message);
     res.status(400).json({ error: "Error in logout" });

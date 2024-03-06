@@ -21,5 +21,10 @@ exports.sendToken = (user, statusCode, res) => {
   res.cookie("jwt", token, cookiesOptions);
   res
     .status(statusCode)
-    .json({ status: "succes", message: "Successful Login", token, data: user });
+    .json({
+      status: "success",
+      message: "Successful Login",
+      token,
+      data: user,
+    });
 };
