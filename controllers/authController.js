@@ -21,6 +21,18 @@ exports.signUp = async (req, res) => {
         message: "Email already in use. Please use a different email.",
       });
     }
+    if (!email || !userName || !password || !passwordConfirm) {
+      return res.status(200).json({
+        status: "fail",
+        message: "Please provide an email",
+      });
+    }
+    if (password < 6) {
+      return res.status(200).json({
+        status: "fail",
+        message: "Please provide an email",
+      });
+    }
 
     // Create a new user
     const user = new User({
