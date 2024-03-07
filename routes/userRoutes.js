@@ -18,6 +18,11 @@ router.post(
   protect,
   savedSentencesController.createSavedSentence
 );
+router.get(
+  "/getSavedSentence",
+  protect,
+  savedSentencesController.getSavedSentences
+);
 router.patch(
   "/editSavedSentence",
   protect,
