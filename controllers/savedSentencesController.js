@@ -1,5 +1,22 @@
 const USER = require("../models/userModel");
 
+exports.getSavedSentences = async (req, res) => {
+  try {
+    const { _id } = req.user;
+    const user = await USER.findById(_id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ data: user.sentences });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ status: "success", error: "Failed to fetch saved sentences" });
+  }
+};
+
 exports.createSavedSentence = async (req, res) => {
   try {
     const { sentence } = req.body;
@@ -46,6 +63,7 @@ exports.editSavedSentence = async (req, res) => {
     await user.save();
 
     res.status(200).json({
+      status: "success",
       message: "Sentence updated successfully",
       data: user.sentences,
     });
@@ -73,6 +91,7 @@ exports.deleteSavedSentence = async (req, res) => {
     await user.save();
 
     res.status(200).json({
+      status: "success",
       message: "Sentence deleted successfully",
       data: user.sentences,
     });
