@@ -1,13 +1,13 @@
 const USER = require("../models/userModel");
 var jwt = require("jsonwebtoken");
-const { sendEmails } = require("../utils/sendEmail2");
-
+const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const {
   uploadPhotoCloud,
   uploadUserPhoto,
 } = require("../middlewares/uploadPhoto");
+const { sendToken } = require("../controllers/JWTHandler");
 
 exports.userProfile = async (req, res) => {
   try {
@@ -122,13 +122,25 @@ exports.forgotPassword = async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   //send it to user's email
-  const resetURL = `${req.protocol}://${req.get(
-    "host"
-  )}/users/resetPassword/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+  const message = `Subject: Password Reset Request
+
+  Dear ${user.fullName.split(" ")[0]},
+  
+  We have received a request to reset the password associated with your account. To complete the password reset process, please use the following verification code:
+  
+  Verification Code: ${resetToken}
+  
+  Please enter this verification code in the appropriate field on the password reset page. If you did not request this password reset or have any concerns, please contact our support team immediately.
+  
+  Thank you,
+  Mafhoom Team`;
   try {
-    sendEmails(user.email, message);
+    sendEmail({
+      email: user.email,
+      subject: "Your password reset token (valid for 10 min)",
+      message,
+    });
 
     res.status(200).json({
       status: "success",
@@ -146,7 +158,7 @@ exports.resetPassword = async (req, res, next) => {
   // get user using token
   const hashedToken = crypto
     .createHash("sha256")
-    .update(req.params.token)
+    .update(req.body.token)
     .digest("hex");
   const user = await USER.findOne({
     passwordResetToken: hashedToken,
@@ -162,9 +174,21 @@ exports.resetPassword = async (req, res, next) => {
   //set new password
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
+  if (!req.body.password || !req.body.passwordConfirm) {
+    return next(
+      res.status(200).json({ status: "fail", message: "password is required" })
+    );
+  }
+  if (req.body.password !== req.body.passwordConfirm) {
+    return next(
+      res
+        .status(200)
+        .json({ status: "fail", message: "passwords are not the same" })
+    );
+  }
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
-  await user.save();
+  await user.save({ validateBeforeSave: false });
   //log the user in, send JWT
   sendToken(user, 201, res);
 };

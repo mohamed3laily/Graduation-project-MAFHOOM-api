@@ -45,5 +45,5 @@ router.patch(
 
 router.patch("/changeMyPassword", protect, userController.changePassword);
 router.post("/forgotPassword", userController.forgotPassword);
-router.patch("/resetPassword/:token", userController.resetPassword);
+router.patch("/resetPassword", userController.resetPassword);
 module.exports = router;

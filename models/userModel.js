@@ -91,7 +91,7 @@ userSchema.pre("save", async function (next) {
       return next(); // If the password hasn't changed, no need to hash it again
     }
     this.password = await bcrypt.hash(this.password, 10);
-    this.passwordConform = undefined;
+    this.passwordConfirm = undefined;
     next();
   } catch (error) {
     next(error);
@@ -123,7 +123,7 @@ userSchema.methods.comparePassword = async function (
 };
 
 userSchema.methods.createPasswordResetToken = function () {
-  const resetToken = crypto.randomBytes(32).toString("hex");
+  const resetToken = crypto.randomBytes(6).toString("hex");
   this.passwordResetToken = crypto
     .createHash("sha256")
     .update(resetToken)
