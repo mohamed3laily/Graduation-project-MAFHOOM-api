@@ -1,6 +1,6 @@
 facebook auth  --done
 google auth
 phone login
-postman docs
+postman docs -- done
 delete and edit sentence --done
-upload users avatar
+upload users avatar --done
