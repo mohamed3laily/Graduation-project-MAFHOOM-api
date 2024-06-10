@@ -10,7 +10,6 @@ var userSchema = new mongoose.Schema(
   {
     userName: {
       type: String,
-      required: [true, "please add a username"],
     },
     accountId: {
       type: String,
@@ -38,7 +37,6 @@ var userSchema = new mongoose.Schema(
     },
     passwordConfirm: {
       type: String,
-      required: [true, "re-enter your password"],
       minlenght: 6,
       validate: {
         // This only works on CREATE and SAVE!!!
