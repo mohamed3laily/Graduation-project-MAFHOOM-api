@@ -51,7 +51,7 @@ var userSchema = new mongoose.Schema(
       type: String,
       //required: [true, "please add a photo"],
       default:
-        "https://icon2.cleanpng.com/20180319/epw/kisspng-india-login-computer-icons-emoticon-medicine-user-login-icon-5ab05c8bc2f8d1.4479395815215074677986.jpg",
+        "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
     },
     phone: {
       type: String,
